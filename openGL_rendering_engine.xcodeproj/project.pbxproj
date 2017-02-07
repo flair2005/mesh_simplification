@@ -7,7 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F75556EF1E4975310065EF39 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556EE1E4975310065EF39 /* main.cpp */; };
+		F75556FF1E4975AA0065EF39 /* Cube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556F61E4975AA0065EF39 /* Cube.cpp */; };
+		F75557001E4975AA0065EF39 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556F81E4975AA0065EF39 /* main.cpp */; };
+		F75557011E4975AA0065EF39 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556FA1E4975AA0065EF39 /* shader.cpp */; };
+		F75557021E4975AA0065EF39 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556FD1E4975AA0065EF39 /* Window.cpp */; };
+		F75557071E4976AA0065EF39 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75557061E4976AA0065EF39 /* OpenGL.framework */; };
+		F75557091E4976DD0065EF39 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F75557081E4976DD0065EF39 /* libglfw.3.2.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +29,18 @@
 
 /* Begin PBXFileReference section */
 		F75556EB1E4975310065EF39 /* openGL_rendering_engine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openGL_rendering_engine; sourceTree = BUILT_PRODUCTS_DIR; };
-		F75556EE1E4975310065EF39 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F75556F61E4975AA0065EF39 /* Cube.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cube.cpp; path = src/Cube.cpp; sourceTree = "<group>"; };
+		F75556F81E4975AA0065EF39 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = "<group>"; };
+		F75556FA1E4975AA0065EF39 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shader.cpp; path = src/shader.cpp; sourceTree = "<group>"; };
+		F75556FD1E4975AA0065EF39 /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Window.cpp; path = src/Window.cpp; sourceTree = "<group>"; };
+		F75557041E4975C00065EF39 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = shaders/shader.vert; sourceTree = "<group>"; };
+		F75557061E4976AA0065EF39 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F75557081E4976DD0065EF39 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = "../../../../Developer/glfw-3.2.1/src/libglfw.3.2.dylib"; sourceTree = "<group>"; };
+		F755570A1E4977BD0065EF39 /* shader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = shaders/shader.frag; sourceTree = "<group>"; };
+		F755570C1E49780B0065EF39 /* Cube.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Cube.h; path = include/Cube.h; sourceTree = "<group>"; };
+		F755570D1E49780B0065EF39 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = main.h; path = include/main.h; sourceTree = "<group>"; };
+		F755570E1E49780B0065EF39 /* shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = shader.h; path = include/shader.h; sourceTree = "<group>"; };
+		F755570F1E49780B0065EF39 /* Window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Window.h; path = include/Window.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +48,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F75557091E4976DD0065EF39 /* libglfw.3.2.dylib in Frameworks */,
+				F75557071E4976AA0065EF39 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +61,7 @@
 			children = (
 				F75556ED1E4975310065EF39 /* openGL_rendering_engine */,
 				F75556EC1E4975310065EF39 /* Products */,
+				F75557051E4976AA0065EF39 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +76,51 @@
 		F75556ED1E4975310065EF39 /* openGL_rendering_engine */ = {
 			isa = PBXGroup;
 			children = (
-				F75556EE1E4975310065EF39 /* main.cpp */,
+				F755570B1E4977D00065EF39 /* include */,
+				F75557031E4975B50065EF39 /* shaders */,
+				F75556F51E4975460065EF39 /* src */,
 			);
 			path = openGL_rendering_engine;
+			sourceTree = "<group>";
+		};
+		F75556F51E4975460065EF39 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				F75556F61E4975AA0065EF39 /* Cube.cpp */,
+				F75556F81E4975AA0065EF39 /* main.cpp */,
+				F75556FA1E4975AA0065EF39 /* shader.cpp */,
+				F75556FD1E4975AA0065EF39 /* Window.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		F75557031E4975B50065EF39 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				F75557041E4975C00065EF39 /* shader.vert */,
+				F755570A1E4977BD0065EF39 /* shader.frag */,
+			);
+			name = shaders;
+			sourceTree = "<group>";
+		};
+		F75557051E4976AA0065EF39 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F75557081E4976DD0065EF39 /* libglfw.3.2.dylib */,
+				F75557061E4976AA0065EF39 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F755570B1E4977D00065EF39 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				F755570C1E49780B0065EF39 /* Cube.h */,
+				F755570D1E49780B0065EF39 /* main.h */,
+				F755570E1E49780B0065EF39 /* shader.h */,
+				F755570F1E49780B0065EF39 /* Window.h */,
+			);
+			name = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,7 +181,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F75556EF1E4975310065EF39 /* main.cpp in Sources */,
+				F75557011E4975AA0065EF39 /* shader.cpp in Sources */,
+				F75557001E4975AA0065EF39 /* main.cpp in Sources */,
+				F75556FF1E4975AA0065EF39 /* Cube.cpp in Sources */,
+				F75557021E4975AA0065EF39 /* Window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,7 +281,13 @@
 		F75556F31E4975310065EF39 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				DEVELOPMENT_TEAM = B3E6PU3372;
+				HEADER_SEARCH_PATHS = (
+					"/Developer/glfw-3.2.1/include",
+					/Developer/glm,
+				);
+				LIBRARY_SEARCH_PATHS = "/Developer/glfw-3.2.1/src";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -225,7 +295,13 @@
 		F75556F41E4975310065EF39 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				DEVELOPMENT_TEAM = B3E6PU3372;
+				HEADER_SEARCH_PATHS = (
+					"/Developer/glfw-3.2.1/include",
+					/Developer/glm,
+				);
+				LIBRARY_SEARCH_PATHS = "/Developer/glfw-3.2.1/src";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
