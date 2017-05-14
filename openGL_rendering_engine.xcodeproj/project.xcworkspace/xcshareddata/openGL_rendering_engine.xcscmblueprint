@@ -1,0 +1,51 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "D0E090D641E68833E87C72973AFB071F2587D86E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7181B46074F6CBD1147E4DAB78B8683C53B5A233" : 9223372036854775807,
+    "50694FC02B9CD4075F0C3D66EB05844A9392548C" : 9223372036854775807,
+    "D0E090D641E68833E87C72973AFB071F2587D86E" : 9223372036854775807,
+    "312D752A3D06827F093B7C8D4C13F316BB15BDBB" : 9223372036854775807,
+    "681E0A825591D6C546EC43F5C98616931DF5ABEF" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "6E2E2015-DBFD-4576-A22E-08918F0B8DC3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7181B46074F6CBD1147E4DAB78B8683C53B5A233" : "..\/165_Project1",
+    "50694FC02B9CD4075F0C3D66EB05844A9392548C" : "..\/..\/CSE134B_HW1",
+    "D0E090D641E68833E87C72973AFB071F2587D86E" : "..\/..\/openGL\/openGL_rendering_engine",
+    "312D752A3D06827F093B7C8D4C13F316BB15BDBB" : "..\/..\/tmux",
+    "681E0A825591D6C546EC43F5C98616931DF5ABEF" : "..\/..\/.Trash\/Vintage"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "openGL_rendering_engine",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "openGL_rendering_engine.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/tmux\/tmux.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "312D752A3D06827F093B7C8D4C13F316BB15BDBB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/rabelfish\/CSE134B_HW1.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "50694FC02B9CD4075F0C3D66EB05844A9392548C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/sublimehq\/Vintage.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "681E0A825591D6C546EC43F5C98616931DF5ABEF"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/AccipiterChalybs\/165_Project1.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7181B46074F6CBD1147E4DAB78B8683C53B5A233"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/freddysauceda\/mesh_simplification.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0E090D641E68833E87C72973AFB071F2587D86E"
+    }
+  ]
+}
