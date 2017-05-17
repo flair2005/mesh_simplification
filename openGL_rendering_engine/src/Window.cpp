@@ -1,6 +1,6 @@
 #include "window.h"
 
-const char* window_title = "GLFW Starter Project";
+const char* window_title = "CSE163 Project 2";
 Cube * cube;
 GLint shaderProgram;
 
@@ -8,10 +8,17 @@ GLint shaderProgram;
 #define VERTEX_SHADER_PATH "shaders/shader.vert"
 #define FRAGMENT_SHADER_PATH "shaders/shader.frag"
 
+#define OFF_PATH "models/testpatch.off"
+
 // Default camera parameters
-glm::vec3 cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
+glm::vec3 cam_pos(0.0f, 0.0f, 1.0f);		// e  | Position of camera
 glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
+
+camera scene_camera(cam_pos, cam_look_at, cam_up);
+double last_x, last_y;
+
+bool left_mouse_down, right_mouse_down;
 
 int Window::width;
 int Window::height;
@@ -19,9 +26,13 @@ int Window::height;
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 
+off_model model;
+
 void Window::initialize_objects()
 {
 	cube = new Cube();
+
+    model = off_model(OFF_PATH);
 
 	// Load the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
@@ -91,14 +102,14 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	if (height > 0)
 	{
 		P = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
-		V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+		V = glm::lookAt(scene_camera.get_pos(), scene_camera.get_look_at(), scene_camera.get_up());
 	}
 }
 
 void Window::idle_callback()
 {
 	// Call the update function the cube
-	cube->update();
+	//cube->update();
 }
 
 void Window::display_callback(GLFWwindow* window)
@@ -109,8 +120,14 @@ void Window::display_callback(GLFWwindow* window)
 	// Use the shader of programID
 	glUseProgram(shaderProgram);
 	
+    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "view_pos");
+    glUniform3f(viewPosLoc, scene_camera.get_pos().x, scene_camera.get_pos().y, scene_camera.get_pos().z);  
+
+
 	// Render the cube
-	cube->draw(shaderProgram);
+	//cube->draw(shaderProgram);
+    model.draw(shaderProgram);
+
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -122,7 +139,13 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 {
 	// Check for a key press
 	if (action == GLFW_PRESS)
-	{
+	{       
+        if (key == GLFW_KEY_S && mods == GLFW_MOD_SHIFT){
+            model.scale(true);
+        }
+        if (key == GLFW_KEY_S && mods == 0){
+            model.scale(false);
+        }
 		// Check if escape was pressed
 		if (key == GLFW_KEY_ESCAPE)
 		{
@@ -130,4 +153,25 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
 	}
+}
+
+void Window::mouse_button_callback(GLFWwindow* window, int key, int action, int mods){
+    if(key == GLFW_MOUSE_BUTTON_RIGHT){
+        right_mouse_down = (action == GLFW_PRESS);
+    }
+    if(key == GLFW_MOUSE_BUTTON_LEFT){
+        left_mouse_down = (action == GLFW_PRESS);
+        glfwGetCursorPos(window, &last_x, &last_y);
+    }
+}
+
+void Window::mouse_move_callback(GLFWwindow* window, double xpos, double ypos){
+    if(left_mouse_down){
+        //Trackball rotation
+        scene_camera.rotate(last_x, last_y, xpos, ypos);
+        // Now update the camera
+        V = glm::lookAt(scene_camera.get_pos(), scene_camera.get_look_at(), scene_camera.get_up());
+        last_x = xpos;
+        last_y = ypos;
+    }
 }

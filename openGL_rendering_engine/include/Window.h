@@ -12,6 +12,8 @@
 #include <GLFW/glfw3.h>
 #include "Cube.h"
 #include "shader.h"
+#include "off_model.h"
+#include "camera.hpp"
 
 class Window
 {
@@ -26,6 +28,8 @@ public:
 	static void resize_callback(GLFWwindow* window, int width, int height);
 	static void idle_callback();
 	static void display_callback(GLFWwindow*);
+    static void mouse_button_callback(GLFWwindow*, int, int, int);
+    static void mouse_move_callback(GLFWwindow*, double, double);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 
