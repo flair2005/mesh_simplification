@@ -15,6 +15,8 @@
 		F75557011E4975AA0065EF39 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556FA1E4975AA0065EF39 /* shader.cpp */; };
 		F75557021E4975AA0065EF39 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F75556FD1E4975AA0065EF39 /* Window.cpp */; };
 		F75557071E4976AA0065EF39 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75557061E4976AA0065EF39 /* OpenGL.framework */; };
+		F7B717441ECA97290043A3E1 /* off_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F7B717431ECA97290043A3E1 /* off_model.cpp */; };
+		F7B717471ECBC20E0043A3E1 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F7B717451ECBC20E0043A3E1 /* camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +47,11 @@
 		F755570D1E49780B0065EF39 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = main.h; path = include/main.h; sourceTree = "<group>"; };
 		F755570E1E49780B0065EF39 /* shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = shader.h; path = include/shader.h; sourceTree = "<group>"; };
 		F755570F1E49780B0065EF39 /* Window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Window.h; path = include/Window.h; sourceTree = "<group>"; };
+		F77966E81ECA55770081F291 /* models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = models; sourceTree = "<group>"; };
+		F7B717421ECA971F0043A3E1 /* off_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = off_model.h; path = include/off_model.h; sourceTree = "<group>"; };
+		F7B717431ECA97290043A3E1 /* off_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = off_model.cpp; path = src/off_model.cpp; sourceTree = "<group>"; };
+		F7B717451ECBC20E0043A3E1 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = camera.cpp; path = src/camera.cpp; sourceTree = "<group>"; };
+		F7B717481ECBC8080043A3E1 /* camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = camera.hpp; path = include/camera.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +89,7 @@
 		F75556ED1E4975310065EF39 /* openGL_rendering_engine */ = {
 			isa = PBXGroup;
 			children = (
+				F77966E81ECA55770081F291 /* models */,
 				F755570B1E4977D00065EF39 /* include */,
 				F75557031E4975B50065EF39 /* shaders */,
 				F75556F51E4975460065EF39 /* src */,
@@ -92,7 +100,9 @@
 		F75556F51E4975460065EF39 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				F7B717451ECBC20E0043A3E1 /* camera.cpp */,
 				F75556F81E4975AA0065EF39 /* main.cpp */,
+				F7B717431ECA97290043A3E1 /* off_model.cpp */,
 				F75556FD1E4975AA0065EF39 /* Window.cpp */,
 				F75556F61E4975AA0065EF39 /* Cube.cpp */,
 				F75556FA1E4975AA0065EF39 /* shader.cpp */,
@@ -123,7 +133,9 @@
 		F755570B1E4977D00065EF39 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				F7B717481ECBC8080043A3E1 /* camera.hpp */,
 				F755570D1E49780B0065EF39 /* main.h */,
+				F7B717421ECA971F0043A3E1 /* off_model.h */,
 				F755570F1E49780B0065EF39 /* Window.h */,
 				F755570C1E49780B0065EF39 /* Cube.h */,
 				F755570E1E49780B0065EF39 /* shader.h */,
@@ -191,7 +203,9 @@
 			files = (
 				F75557011E4975AA0065EF39 /* shader.cpp in Sources */,
 				F75557001E4975AA0065EF39 /* main.cpp in Sources */,
+				F7B717441ECA97290043A3E1 /* off_model.cpp in Sources */,
 				F75556FF1E4975AA0065EF39 /* Cube.cpp in Sources */,
+				F7B717471ECBC20E0043A3E1 /* camera.cpp in Sources */,
 				F75557021E4975AA0065EF39 /* Window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
