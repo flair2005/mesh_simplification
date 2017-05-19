@@ -56,6 +56,17 @@ void Tokenize(const string& str, vector<string>& tokens, const string& delimiter
     }
 }
 
+void off_model::print_vfa(){
+    int i = 0;
+    for(auto vfa_entry : vertex_face_adj){
+        cout << "v" << i << " ";
+        i++;
+        for(auto face : vfa_entry){
+            cout << face << " ";
+        }
+        cout << "\n";
+    }
+}
 
 void off_model::parse_file(const char* path){
     //Create the file pointer
@@ -167,6 +178,7 @@ void off_model::parse_file(const char* path){
 
 
 void off_model::calculate_normals(){
+    normals.clear();    //Clear the normals beforehand
     for(int i = 0; i < vertices.size(); ++i){
         //Store all the shared faces
         glm::vec3 vertex_normal;
@@ -203,7 +215,8 @@ void off_model::draw(GLuint shader){
 
     //Actually draw
     glBindVertexArray(VAO);
-    glDrawElements(GL_LINE_LOOP, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_TRIANGLES, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINE_STRIP, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
        
 }
 
@@ -214,4 +227,162 @@ void off_model::scale(bool up){
     else{
         toWorld = toWorld * glm::scale(glm::mat4(1.0f), glm::vec3(0.5f,0.5f,0.5f));
     }
+}
+
+void off_model::print_vertices(){
+    int i = 0;
+    for(auto v : vertices){
+        cout << i << "( " << v.x << " " << v.y << " " << v.z << " )\n";
+        i++;
+    }
+}
+
+//HAVE TO CALL THIS BEFORE VERTEX SPLIT
+void off_model::read_edge_collapses(){
+    ifstream edge_collapses("../edge_collapse.txt");
+    string line;
+    while(edge_collapses,line){
+        edge_collapse_string.push_back(line);
+    }
+}
+
+void off_model::vertex_split(){
+    //Read in the edge collapse file and do the last two
+
+}
+
+void off_model::edge_collapse(int v0, int v1){
+    //Use to keep track of edge collapses so that we can work backwards
+    ofstream log_file;
+    log_file.open("../edge_collapse.txt", ios_base::app);
+
+    vector<int> vert_to_erase = {v0, v1};
+    sort(vert_to_erase.begin(), vert_to_erase.end());
+
+    //Log v0 and v1
+    log_file << v0 << " " << vertices[v0].x << " " << vertices[v0].y << " " << vertices[v0].z << " / ";
+    log_file << v1 << " " << vertices[v1].x << " " << vertices[v1].y << " " << vertices[v1].z << "\n";
+
+    glm::vec3 v_new = (vertices[v0] + vertices[v1])/2.0f;   //Replace with this vertex
+
+    cout << "VERT BEFORE EC\n";
+    print_vertices();
+
+    //Replace vertex at lowest index with v_new
+    vertices[vert_to_erase[0]] = v_new;
+
+    //Erase the faces that share v0 and v1 from the face table
+    sort(vertex_face_adj[v0].begin(), vertex_face_adj[v0].end());   //sort so we can use the intersection
+    sort(vertex_face_adj[v1].begin(), vertex_face_adj[v1].end());
+    vector<unsigned int> common_faces;                              //This is where we fill the common faces
+
+    set_intersection(vertex_face_adj[v0].begin(), vertex_face_adj[v0].end(),
+                     vertex_face_adj[v1].begin(), vertex_face_adj[v1].end(), back_inserter(common_faces));
+
+    cout << "FACES BEFORE EC\n";
+    print_faces();
+
+    for(auto face : common_faces){
+        log_file << face << " " << faces[face].x << " " << faces[face].y << " " << faces[face].z << " / ";
+    }
+    log_file << "\n";
+
+    //The common_faces vector returns sorted, so remove faces in backwards order
+    //for(int i = common_faces.size()-1; i >= 0; --i){
+    //    faces.erase(faces.begin()+common_faces[i]);
+    //}
+    //Vertex-face-adj table needs to be rebuilt (later)
+
+    //Go through the faces table and update any references to v0 or v1 to vn
+    for(int i = 0; i < faces.size(); ++i){
+        //Check v0
+        if(faces[i].x == v0) { faces[i].x = v0; }
+        if(faces[i].y == v0) { faces[i].y = v0; }
+        if(faces[i].z == v0) { faces[i].z = v0; }
+        //Check v1
+        if(faces[i].x == v1) { faces[i].x = v0; }
+        if(faces[i].y == v1) { faces[i].y = v0; }
+        if(faces[i].z == v1) { faces[i].z = v0; }
+    }
+
+    cout << "AFTER EC CHANGE REFERENCES of v0 and v1 to v0\n";
+    print_faces();
+    
+    //Erase the vertices, this is probably a stupid way to do it but easiest to do without a ton of math
+    vertices.erase(vertices.begin() + vert_to_erase[1]);
+    print_vertices();
+
+    //Fix all the references in the face table because the vertex indexing got mucked up
+    vec3 x_sub(1.0f,0.0f,0.0f);
+    vec3 y_sub(0.0f,1.0f,0.0f);
+    vec3 z_sub(0.0f,0.0f,1.0f);
+    for(auto &face : faces){
+        if(face.x > (float)vert_to_erase[1]) { face = face - x_sub; }
+        if(face.y > (float)vert_to_erase[1]) { face = face - y_sub; }
+        if(face.z > (float)vert_to_erase[1]) { face = face - z_sub; }
+    }
+
+    cout << "AFTER FIXING THE OFFSET BECAUSE v1 is larger\n";
+    print_faces();
+
+    //Here is where we fix the vfa
+    rebuild_vfa();
+    //Print for our sanity
+    print_vfa();
+
+    //Rebuild the faces_flat vector
+    rebuild_flat_faces();
+
+    //Rebuild the normals
+    calculate_normals();
+
+    //Update the VBO's
+    update_vbos();
+
+    //Remember to close the file
+    log_file.close();
+}
+
+void off_model::rebuild_vfa(){
+    vertex_face_adj.clear();                    //Clear
+    vertex_face_adj.resize(vertices.size());    //Resize to be as big as the vertices
+    for(int i = 0; i < faces.size(); ++i){
+        vertex_face_adj[faces[i].x].push_back(i);
+        vertex_face_adj[faces[i].y].push_back(i);
+        vertex_face_adj[faces[i].z].push_back(i);
+    }
+}
+
+
+void off_model::print_faces(){
+    printf("PRINTING FACES:\n");
+    int i = 0;
+    for(auto face : faces){
+        printf("%d ( %f %f %f)\n", i, face.x, face.y, face.z);
+        i++;
+    }
+    printf("FINISHED PRINTING FACES.\n");
+}
+
+void off_model::rebuild_flat_faces(){
+    faces_flat.clear(); //Clear the flat faces
+
+    for(auto face : faces){
+        faces_flat.push_back(face.x);
+        faces_flat.push_back(face.y);
+        faces_flat.push_back(face.z);
+    }
+}
+
+void off_model::update_vbos(){
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces_flat.size()*sizeof(int), &faces_flat[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, NBO);
+    glBufferData(GL_ARRAY_BUFFER, normals.size()*sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

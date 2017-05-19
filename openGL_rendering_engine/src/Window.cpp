@@ -146,6 +146,21 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
         if (key == GLFW_KEY_S && mods == 0){
             model.scale(false);
         }
+        if (key == GLFW_KEY_C && mods == 0){
+            model.edge_collapse(0, 1);
+        }
+        if (key == GLFW_KEY_C && mods == GLFW_MOD_SHIFT){
+            model.edge_collapse(0, 9);
+        }
+        if (key == GLFW_KEY_P && mods == 0){
+            model.print_vfa();
+        }
+        if (key == GLFW_KEY_R && mods == 0){
+            model.read_edge_collapses();
+        }
+        if (key == GLFW_KEY_V && mods == 0){
+            model.vertex_split();
+        }
 		// Check if escape was pressed
 		if (key == GLFW_KEY_ESCAPE)
 		{
