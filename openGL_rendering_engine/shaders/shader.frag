@@ -15,7 +15,7 @@ void main()
     color = vec4(1.0f,.25f,1.0f,1.0f);
     //Use normal lighting
     //color = vec4(v_normal, 1.0f);
-    /*
+    
     vec3 norm = normalize(v_normal);
     
     //Use phong lighting
@@ -49,5 +49,4 @@ void main()
     
     vec3 result = (ambient + diffuse + diffuse2 + specular) * object_color;
     color = vec4(result, 1.0f);
-     */
 }

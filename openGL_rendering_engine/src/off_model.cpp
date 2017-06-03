@@ -215,8 +215,8 @@ void off_model::draw(GLuint shader){
 
     //Actually draw
     glBindVertexArray(VAO);
-    //glDrawElements(GL_TRIANGLES, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
-    glDrawElements(GL_LINE_STRIP, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_LINE_STRIP, (unsigned int)faces_flat.size(), GL_UNSIGNED_INT, 0);
        
 }
 
@@ -239,16 +239,96 @@ void off_model::print_vertices(){
 
 //HAVE TO CALL THIS BEFORE VERTEX SPLIT
 void off_model::read_edge_collapses(){
+    //Read in the edge collapse file 
     ifstream edge_collapses("../edge_collapse.txt");
     string line;
-    while(edge_collapses,line){
+    while(getline(edge_collapses,line)){
         edge_collapse_string.push_back(line);
     }
+    edge_collapses.close();
 }
 
 void off_model::vertex_split(){
-    //Read in the edge collapse file and do the last two
+    //Error if empty
+    if(edge_collapse_string.size() == 0){
+        printf("No edge collapses yet! Can't vertex split.");
+        return;
+    }
+    //Get the indices we're looking at
+    int face_change_line = edge_collapse_string.size() - 1;
+    int face_line = face_change_line - 1;
+    int vertex_line = face_line - 1;
 
+    //Save the strings
+    string face_change_data = edge_collapse_string[face_change_line];
+    string face_data = edge_collapse_string[face_line];
+    string vert_data = edge_collapse_string[vertex_line];
+
+    //Remove these from the data structure
+    edge_collapse_string.erase(edge_collapse_string.begin() + face_change_line);
+    edge_collapse_string.erase(edge_collapse_string.begin() + face_line);
+    edge_collapse_string.erase(edge_collapse_string.begin() + vertex_line);
+
+    //Add the faces into the faces matrix
+    vector<string> fc_tokens;
+    vector<string> face_tokens;
+    vector<string> vert_tokens;
+
+    Tokenize(face_change_data, fc_tokens, " /");
+    Tokenize(face_data, face_tokens, " /");
+    Tokenize(vert_data, vert_tokens, " /");
+
+    //FC_tokens will have faces.size()*4 tokens
+    //face_index xc yc zc
+    //Face data will have a multiple of 4 tokens
+    //face_index v0 v1 v2
+    //Vertex lines will have a multiple of 8 tokens
+    //v0 v0.x v0.y v0.z v1 v1.x v1.y v1.z
+    int number_of_fc    = fc_tokens.size();
+    int number_of_faces = face_tokens.size();
+    int number_of_vert  = vert_tokens.size();
+
+    vector<int> fc_tokens_int;
+    vector<int> face_tokens_int;
+    vector<int> vert_tokens_int;
+
+    for(auto fc : fc_tokens){
+        fc_tokens_int.push_back(stoi(fc));
+    }
+    for(auto f : face_tokens){
+        face_tokens_int.push_back(stoi(f));
+    }
+    for(auto v : vert_tokens){
+        vert_tokens_int.push_back(stoi(v));
+    }
+
+    //Fix the faces
+    //First all references to v1
+    for(int i = 0; i < fc_tokens_int.size(); i+=4){
+        int face_index = fc_tokens_int[i];
+        if(fc_tokens_int[i+1] == 1) { faces[face_index].x = vert_tokens_int[4]; }
+        if(fc_tokens_int[i+2] == 1) { faces[face_index].y = vert_tokens_int[4]; }
+        if(fc_tokens_int[i+3] == 1) { faces[face_index].z = vert_tokens_int[4]; }
+    }
+
+    //Fix the faces that were removed
+    for(int i = 0; i < face_tokens_int.size(); i+=4){
+        int face_index = face_tokens_int[i];
+        faces[face_index].x = face_tokens_int[i+1];
+        faces[face_index].y = face_tokens_int[i+2];
+        faces[face_index].z = face_tokens_int[i+3];
+    }
+
+    //Finally fix the vertices
+    glm::vec3 v1(vert_tokens_int[5], vert_tokens_int[6], vert_tokens_int[7]);
+    vertices.insert(vertices.begin()+vert_tokens_int[4], v1);
+    glm::vec3 v0(vert_tokens_int[1], vert_tokens_int[2], vert_tokens_int[3]);
+    vertices[vert_tokens_int[0]] = v0;
+
+    rebuild_vfa();
+    rebuild_flat_faces();
+    calculate_normals();
+    update_vbos();
 }
 
 void off_model::edge_collapse(int v0, int v1){
@@ -264,7 +344,11 @@ void off_model::edge_collapse(int v0, int v1){
     log_file << v1 << " " << vertices[v1].x << " " << vertices[v1].y << " " << vertices[v1].z << "\n";
 
     glm::vec3 v_new = (vertices[v0] + vertices[v1])/2.0f;   //Replace with this vertex
+    //glm::vec3 v_new = (vertices[v0]);   //Replace with this vertex
 
+    cout << "PRINT VFA\n";
+    print_vfa();
+    
     cout << "VERT BEFORE EC\n";
     print_vertices();
 
@@ -287,23 +371,22 @@ void off_model::edge_collapse(int v0, int v1){
     }
     log_file << "\n";
 
-    //The common_faces vector returns sorted, so remove faces in backwards order
-    //for(int i = common_faces.size()-1; i >= 0; --i){
-    //    faces.erase(faces.begin()+common_faces[i]);
-    //}
     //Vertex-face-adj table needs to be rebuilt (later)
 
     //Go through the faces table and update any references to v0 or v1 to vn
     for(int i = 0; i < faces.size(); ++i){
+        bool f_x_c = false, f_y_c = false, f_z_c = false;
         //Check v0
         if(faces[i].x == v0) { faces[i].x = v0; }
         if(faces[i].y == v0) { faces[i].y = v0; }
         if(faces[i].z == v0) { faces[i].z = v0; }
         //Check v1
-        if(faces[i].x == v1) { faces[i].x = v0; }
-        if(faces[i].y == v1) { faces[i].y = v0; }
-        if(faces[i].z == v1) { faces[i].z = v0; }
+        if(faces[i].x == v1) { faces[i].x = v0; f_x_c = true; }
+        if(faces[i].y == v1) { faces[i].y = v0; f_y_c = true; }
+        if(faces[i].z == v1) { faces[i].z = v0; f_z_c = true; }
+        log_file << i << " " << f_x_c << " " << f_y_c << " " << f_z_c << " / ";
     }
+    log_file << "\n";
 
     cout << "AFTER EC CHANGE REFERENCES of v0 and v1 to v0\n";
     print_faces();

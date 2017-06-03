@@ -8,7 +8,10 @@ GLint shaderProgram;
 #define VERTEX_SHADER_PATH "shaders/shader.vert"
 #define FRAGMENT_SHADER_PATH "shaders/shader.frag"
 
-#define OFF_PATH "models/testpatch.off"
+#define OFF_PATH "models/cow.off"
+#define PLANE "models/plane.off"
+#define TEAPOT "models/teapot.off"
+#define TORUS "models/torus.off"
 
 // Default camera parameters
 glm::vec3 cam_pos(0.0f, 0.0f, 1.0f);		// e  | Position of camera
@@ -26,13 +29,19 @@ int Window::height;
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 
-off_model model;
+off_model cow, plane, pot, torus;
+off_model* active;
 
 void Window::initialize_objects()
 {
 	cube = new Cube();
 
-    model = off_model(OFF_PATH);
+    cow = off_model(OFF_PATH);
+    plane = off_model(PLANE);
+    pot = off_model(TEAPOT);
+    torus = off_model(TORUS);
+    
+    active = &cow;
 
 	// Load the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
@@ -126,7 +135,7 @@ void Window::display_callback(GLFWwindow* window)
 
 	// Render the cube
 	//cube->draw(shaderProgram);
-    model.draw(shaderProgram);
+    active->draw(shaderProgram);
 
 
 	// Gets events, including input such as keyboard and mouse or window resizing
@@ -141,25 +150,37 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	if (action == GLFW_PRESS)
 	{       
         if (key == GLFW_KEY_S && mods == GLFW_MOD_SHIFT){
-            model.scale(true);
+            active->scale(true);
         }
         if (key == GLFW_KEY_S && mods == 0){
-            model.scale(false);
+            active->scale(false);
         }
         if (key == GLFW_KEY_C && mods == 0){
-            model.edge_collapse(0, 1);
+            active->edge_collapse(0, 1);
         }
         if (key == GLFW_KEY_C && mods == GLFW_MOD_SHIFT){
-            model.edge_collapse(0, 9);
+            active->edge_collapse(0, 9);
         }
         if (key == GLFW_KEY_P && mods == 0){
-            model.print_vfa();
+            active->print_vfa();
         }
         if (key == GLFW_KEY_R && mods == 0){
-            model.read_edge_collapses();
+            active->read_edge_collapses();
         }
         if (key == GLFW_KEY_V && mods == 0){
-            model.vertex_split();
+            active->vertex_split();
+        }
+        if (key == GLFW_KEY_U){
+            active = &cow;
+        }
+        if (key == GLFW_KEY_I){
+            active = &plane;
+        }
+        if (key == GLFW_KEY_O){
+            active = &torus;
+        }
+        if (key == GLFW_KEY_P){
+            active = &pot;
         }
 		// Check if escape was pressed
 		if (key == GLFW_KEY_ESCAPE)

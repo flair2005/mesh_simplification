@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alfredo Sauceda. All rights reserved.
 //
 
-#include "camera.hpp"
+#include "../include/camera.hpp"
 
 camera::camera(vec3 pos, vec3 look, vec3 up){
     this->cam_pos = pos;
