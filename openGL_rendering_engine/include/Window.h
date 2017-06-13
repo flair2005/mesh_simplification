@@ -15,6 +15,13 @@
 #include "off_model.h"
 #include "camera.hpp"
 
+#include "model.hpp"
+#include "object.hpp"
+#include "scene.hpp"
+#include "skybox.hpp"
+
+#include "stb_image.h"
+
 class Window
 {
 public:

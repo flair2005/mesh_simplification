@@ -170,7 +170,7 @@ void off_model::parse_file(const char* path){
         vertices[i].y /= biggestAxis;
         vertices[i].z /= biggestAxis;
     }
-
+ 
     calculate_normals();
     
     file.close();
@@ -255,9 +255,9 @@ void off_model::vertex_split(){
         return;
     }
     //Get the indices we're looking at
-    int face_change_line = edge_collapse_string.size() - 1;
-    int face_line = face_change_line - 1;
-    int vertex_line = face_line - 1;
+    unsigned long face_change_line = edge_collapse_string.size() - 1;
+    unsigned long face_line = face_change_line - 1;
+    unsigned long vertex_line = face_line - 1;
 
     //Save the strings
     string face_change_data = edge_collapse_string[face_change_line];
@@ -284,9 +284,6 @@ void off_model::vertex_split(){
     //face_index v0 v1 v2
     //Vertex lines will have a multiple of 8 tokens
     //v0 v0.x v0.y v0.z v1 v1.x v1.y v1.z
-    int number_of_fc    = fc_tokens.size();
-    int number_of_faces = face_tokens.size();
-    int number_of_vert  = vert_tokens.size();
 
     vector<int> fc_tokens_int;
     vector<int> face_tokens_int;
@@ -468,4 +465,15 @@ void off_model::update_vbos(){
     glBufferData(GL_ARRAY_BUFFER, normals.size()*sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+vector<glm::vec3> off_model::get_vert(){
+    return vertices;
+}
+vector<glm::vec3> off_model::get_normals(){
+    return normals;
+}
+vector<unsigned int> off_model::get_faces(){
+    return faces_flat;
 }

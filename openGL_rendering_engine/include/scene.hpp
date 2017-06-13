@@ -11,17 +11,19 @@
 
 #include <stdio.h>
 #include <vector>
-#include "../include/object.hpp"
-#include "../include/Window.h"
+#include "object.hpp"
+
+using namespace std;
 
 class scene{
-
 public:
     scene();
+    ~scene();
     void draw();
+    int add_object(object*);    //Returns index of this object
     
 private:
-    vector<object> scene_contents;
+    vector<object*> scene_contents;
 };
 
 #endif /* scene_hpp */

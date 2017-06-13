@@ -21,6 +21,10 @@ class off_model{
         void vertex_split();
         void print_vfa();
         void read_edge_collapses();
+    
+        vector<glm::vec3> get_vert();
+        vector<glm::vec3> get_normals();
+        vector<unsigned int> get_faces();
 
     private:
         vector<glm::vec3> vertices;        //Vertices are floats arrays of size 3

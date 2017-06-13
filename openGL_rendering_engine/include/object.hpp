@@ -9,12 +9,11 @@
 #define object_hpp
 
 #include <stdio.h>
-#include "../include/Window.h"
 
 class object{
-    
 public:
-    void draw();
+    virtual void draw();
+    
 };
 
 #endif /* scene_hpp */

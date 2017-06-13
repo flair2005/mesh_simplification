@@ -2,11 +2,22 @@
 
 const char* window_title = "CSE163 Project 2";
 Cube * cube;
-GLint shaderProgram;
+GLint shaderProgram, skybox_shader, envi_map;
 
 // On some systems you need to change this to the absolute path
 #define VERTEX_SHADER_PATH "shaders/shader.vert"
 #define FRAGMENT_SHADER_PATH "shaders/shader.frag"
+#define VERTEX_SKYSHADER_PATH "shaders/sky.vert"
+#define FRAGMENT_SKYSHADER_PATH "shaders/sky.frag"
+#define VERTEX_ENVSHADER_PATH "shaders/envi.vert"
+#define FRAGMENT_ENVSHADER_PATH "shaders/envi.frag"
+
+#define SKY_UP "assets/skybox/up.tga"
+#define SKY_DN "assets/skybox/dn.tga"
+#define SKY_BK "assets/skybox/bk.tga"
+#define SKY_FT "assets/skybox/ft.tga"
+#define SKY_LF "assets/skybox/lf.tga"
+#define SKY_RT "assets/skybox/rt.tga"
 
 #define OFF_PATH "models/cow.off"
 #define PLANE "models/plane.off"
@@ -30,27 +41,47 @@ glm::mat4 Window::P;
 glm::mat4 Window::V;
 
 off_model cow, plane, pot, torus;
-off_model* active;
+
+model* test;
+skybox* sky;
+scene* scene_render;
+vector<string> skybox_paths;
 
 void Window::initialize_objects()
 {
 	cube = new Cube();
+    
+    skybox_paths.push_back(SKY_RT);
+    skybox_paths.push_back(SKY_LF);
+    skybox_paths.push_back(SKY_UP);
+    skybox_paths.push_back(SKY_DN);
+    skybox_paths.push_back(SKY_BK);
+    skybox_paths.push_back(SKY_FT);
 
     cow = off_model(OFF_PATH);
     plane = off_model(PLANE);
     pot = off_model(TEAPOT);
     torus = off_model(TORUS);
     
-    active = &cow;
-
 	// Load the shader program. Make sure you have the correct filepath up top
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+    skybox_shader = LoadShaders(VERTEX_SKYSHADER_PATH, FRAGMENT_SKYSHADER_PATH);
+    envi_map = LoadShaders(VERTEX_ENVSHADER_PATH, FRAGMENT_ENVSHADER_PATH);
+    
+    scene_render = new scene();
+    sky = new skybox(skybox_paths, skybox_shader);
+    test = new model(cow, envi_map);
+    
+    scene_render->add_object(sky);
+    scene_render->add_object(test);
+
 }
 
 // Treat this as a destructor function. Delete dynamically allocated memory here.
 void Window::clean_up()
 {
 	delete(cube);
+    delete(scene_render);
 	glDeleteProgram(shaderProgram);
 }
 
@@ -118,7 +149,6 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 void Window::idle_callback()
 {
 	// Call the update function the cube
-	//cube->update();
 }
 
 void Window::display_callback(GLFWwindow* window)
@@ -126,17 +156,21 @@ void Window::display_callback(GLFWwindow* window)
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    //Used for a skybox optimization, perspective division
+    glDepthFunc(GL_LEQUAL);
+    
 	// Use the shader of programID
-	glUseProgram(shaderProgram);
+	glUseProgram(envi_map);
 	
+    // Send the camera position
     GLint viewPosLoc = glGetUniformLocation(shaderProgram, "view_pos");
     glUniform3f(viewPosLoc, scene_camera.get_pos().x, scene_camera.get_pos().y, scene_camera.get_pos().z);  
 
 
 	// Render the cube
 	//cube->draw(shaderProgram);
-    active->draw(shaderProgram);
-
+    //active->draw(shaderProgram);
+    scene_render->draw();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -150,37 +184,10 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	if (action == GLFW_PRESS)
 	{       
         if (key == GLFW_KEY_S && mods == GLFW_MOD_SHIFT){
-            active->scale(true);
+            test->scale(1.0f, 1.0f, 1.0f);
         }
         if (key == GLFW_KEY_S && mods == 0){
-            active->scale(false);
-        }
-        if (key == GLFW_KEY_C && mods == 0){
-            active->edge_collapse(0, 1);
-        }
-        if (key == GLFW_KEY_C && mods == GLFW_MOD_SHIFT){
-            active->edge_collapse(0, 9);
-        }
-        if (key == GLFW_KEY_P && mods == 0){
-            active->print_vfa();
-        }
-        if (key == GLFW_KEY_R && mods == 0){
-            active->read_edge_collapses();
-        }
-        if (key == GLFW_KEY_V && mods == 0){
-            active->vertex_split();
-        }
-        if (key == GLFW_KEY_U){
-            active = &cow;
-        }
-        if (key == GLFW_KEY_I){
-            active = &plane;
-        }
-        if (key == GLFW_KEY_O){
-            active = &torus;
-        }
-        if (key == GLFW_KEY_P){
-            active = &pot;
+            test->scale(1.0f, 1.0f, 1.0f);
         }
 		// Check if escape was pressed
 		if (key == GLFW_KEY_ESCAPE)
